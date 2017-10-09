@@ -1,9 +1,14 @@
 package com.master.mind.Screens;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.SkinLoader;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -23,19 +28,18 @@ public class LoadingScreen implements Screen {
     }
     @Override
     public void show() {
+
+
+
+
         game.manager.load("Leon.jpg", Texture.class);
-        // First, let's define the params and then load our smaller font
-        FreetypeFontLoader.FreeTypeFontLoaderParameter parameter = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
-        parameter.fontFileName = "basicfont.ttf";
-        parameter.fontParameters.size = 10;
-        game.manager.load("basicfont.ttf", BitmapFont.class, parameter);
         game.manager.finishLoading();
 
         stage = new Stage();
         Image loadPicture = new Image(game.manager.get("Leon.jpg", Texture.class));
         stage.addActor(loadPicture);
         loadPicture.setSize(stage.getWidth(), stage.getHeight());
-/*
+
         game.manager.load("gameAssets/background.png", Texture.class);
         game.manager.load("gameAssets/lose.png", Texture.class);
         game.manager.load("gameAssets/button.png", Texture.class);
@@ -45,15 +49,23 @@ public class LoadingScreen implements Screen {
         game.manager.load("gameAssets/white.png", Texture.class);
         game.manager.load("gameAssets/whiteStar.png", Texture.class);
         game.manager.load("gameAssets/win.png", Texture.class);
-
         game.manager.load("shad/uiskin.json", Skin.class, new SkinLoader.SkinParameter("shad/uiskin.atlas"));
 
-        // First, let's define the params and then load our smaller font
-        FreetypeFontLoader.FreeTypeFontLoaderParameter parameter = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
-        parameter.fontFileName = "basicfont.ttf";
-        parameter.fontParameters.size = 10;
-        game.manager.load("basicfont.ttf", BitmapFont.class, parameter);
-*/
+
+        //load font
+        String path="Font/SourceSansPro-Black.ttf";     //can be inside nested folder
+        String fileName = "font.ttf" ;   // it can be any name with extension, w
+
+        //important or wont work!!!!!!
+        FileHandleResolver resolver = new InternalFileHandleResolver();
+        game.manager.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
+        game.manager.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));
+
+        FreetypeFontLoader.FreeTypeFontLoaderParameter parms = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
+        parms.fontFileName = path;    // path of .ttf file where that exist
+        parms.fontParameters.size = (int)(80 * Gdx.graphics.getDensity());
+        game.manager.load(fileName, BitmapFont.class, parms);   // fileName with extension, sameName will use to get from manager
+
 
 
     }

@@ -3,6 +3,7 @@ package com.master.mind;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -20,9 +21,7 @@ import com.master.mind.Screens.PlayScreen;
 public class MasterMaster extends Game {
 	public float aspectRatio;
 	public Vector2 res;
-	public boolean isTimer;
-	public boolean isPermute;
-	public int turnTime;
+	public GameOptions options;
 	public AssetManager manager;
 
 	@Override
@@ -32,8 +31,9 @@ public class MasterMaster extends Game {
 		aspectRatio = res.y / res.x;
 
 		manager = new AssetManager();
-        this.setScreen(new LoadingScreen(this));
+		options = new GameOptions();
 
+		this.setScreen(new LoadingScreen(this));
 
 	}
     public void render() {

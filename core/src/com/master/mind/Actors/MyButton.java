@@ -33,7 +33,7 @@ public class MyButton extends Image {
     public void pressButton(){
         isWon = playScreen.computeStars();
         playScreen.line += 1;
-        if (playScreen.game.isTimer) playScreen.cd.setCountdown();
+        if (playScreen.game.options.isTimer()) playScreen.cd.setCountdown();
 
         if (playScreen.indexOfPressed != -1) {
             playScreen.balls.get(playScreen.indexOfPressed).isPressed = false;

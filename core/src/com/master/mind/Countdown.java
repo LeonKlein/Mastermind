@@ -1,10 +1,12 @@
 package com.master.mind;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.master.mind.Screens.PlayScreen;
 
 /**
  * Created by Leon on 06.10.2017.
@@ -15,12 +17,13 @@ public class Countdown {
     private BitmapFont timerFont;
     private int countdown;
     private float oneSecond;
+    private PlayScreen playScreen;
 
-    public Countdown(int turnTime){
+    public Countdown(int turnTime, PlayScreen screen){
         this.turnTime = turnTime;
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("basicFont/BasicFontRegular.ttf"));
-        timerFont = createFont(generator, 106);
-        oneSecond = 0;
+        this.playScreen = screen;
+        timerFont = playScreen.game.manager.get("font.ttf");
+        oneSecond = 0; //LOL
         setCountdown();
     }
 
@@ -43,13 +46,7 @@ public class Countdown {
         else return false;
     }
 
-    //timer font
-    BitmapFont createFont(FreeTypeFontGenerator ftfg, float dp)
-    {
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = (int)(dp * Gdx.graphics.getDensity());
-        return ftfg.generateFont(parameter);
-    }
+
 
     public void draw(Batch batch, float x, float y){
         batch.begin();

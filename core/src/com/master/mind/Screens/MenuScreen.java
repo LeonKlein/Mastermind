@@ -1,6 +1,7 @@
 package com.master.mind.Screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -35,83 +36,57 @@ public class MenuScreen implements Screen {
     private Stage stage;
     private Table table;
 
+
     public MenuScreen(MasterMaster gam){
         this.game = gam;
     }
     @Override
     public void show() {
-        skin = new Skin(Gdx.files.internal("shad/uiskin.json"));
+        skin = game.manager.get("shad/uiskin.json");
         stage = new Stage(new StretchViewport(game.res.x / 4, game.res.y / 4));
-
         table = new Table();
 
-
-        final TextButton button = new TextButton("Play", skin, "default");
-        final TextButton toggleButton = new TextButton("Permute", skin, "toggle");
+        final TextButton playButton = new TextButton("Play", skin, "default");
+        final TextButton permuteButton = new TextButton("Permute", skin, "toggle");
         final SelectBox selectBox = new SelectBox(skin);
 
 
-        button.addListener(new ClickListener(){
+        playButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
-                diffilculty((String) selectBox.getSelected());
+                game.options.difficulty((String) selectBox.getSelected());
                 game.setScreen(new PlayScreen(game));
             }
         });
 
-        selectBox.setItems("easy", "medium", "hard", "godlike");
-
-
-
-
-
-        //toggle button
-        toggleButton.addListener(new ClickListener(){
+        //permute button (can only be toggled on/off)
+        permuteButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
-                game.turnTime = 30;
-                if (toggleButton.isChecked() == true) game.isPermute = true;
-                else game.isPermute = false;
+                if (permuteButton.isChecked() == true) game.options.setPermute(true);
+                else game.options.setPermute(false);
             }
         });
 
-
-
+        selectBox.setItems("easy", "medium", "hard", "godlike");
+        selectBox.setSelected(game.options.getPrefs().getString("Difficulty", "easy"));
 
         stage.addActor(table);
 
+        //Layouting of menu
         table.align(Align.center | Align.top);
         table.setFillParent(true);
-        table.setDebug(true);
+        table.setDebug(false);
         table.padTop(game.res.y / 16);
-        table.add(button).fillX().uniformX();
+        table.add(playButton).fillX().uniformX();
         table.row();
-        table.add(toggleButton).fillX().padTop(button.getHeight());
+        table.add(permuteButton).fillX().padTop(playButton.getHeight());
         table.row();
-        table.add(selectBox).fillX().padTop(button.getHeight());
-        //button.setSize(game.res.x / 2, game.res.x / 2 / buttonRatio); ///flasch gescaled!!!!!!!!!!!!!!!!!!!!/
+        table.add(selectBox).fillX().padTop(playButton.getHeight());
 
         Gdx.input.setInputProcessor(stage);
     }
 
-    public void diffilculty(String grade){
-        if (grade == "easy") {
-            game.isTimer = false;
-            game.turnTime = 0;
-        }
-        else if (grade == "medium") {
-            game.isTimer = true;
-            game.turnTime = 20;
-        }
-        else if (grade == "hard"){
-            game.isTimer = true;
-            game.turnTime = 10;
-        }
-        else {
-            game.isTimer = true;
-            game.turnTime = 5;
-        }
-    }
 
 
     @Override

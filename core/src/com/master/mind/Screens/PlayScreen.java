@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.master.mind.Actors.Ball;
 import com.master.mind.Actors.PermutableArray;
+import com.master.mind.Containers.BallArray;
 import com.master.mind.Countdown;
 import com.master.mind.MasterMaster;
 import com.master.mind.Actors.MyButton;
@@ -31,8 +32,9 @@ import com.master.mind.Actors.SelectColorBall;
 public class PlayScreen implements Screen {
     public MasterMaster game;
     private Image background;
-    private Stage stage;
-    
+    public Stage stage;
+
+    private BallArray array;
     public Array<Ball> balls;
     private Array<SelectColorBall> bar;
     public Array<Ball> solutionBalls;
@@ -40,7 +42,7 @@ public class PlayScreen implements Screen {
     private Array<Color> colors;
     private PermutableArray<Color> colorSet;
 
-    private Color color_def;
+    public Color color_def;
 
     private MyButton confirmButton;
     //fixxxxx (und ganze win lose sache.....)))
@@ -102,7 +104,7 @@ public class PlayScreen implements Screen {
         //initialze stage + background
         stage = new Stage(new ScreenViewport());
 
-        bg = new Texture(Gdx.files.internal("gameAssets/background.png"));
+        bg = game.manager.get("gameAssets/background.png");
         background = new Image(bg);
         background.setSize(game.res.x, game.res.y);
         background.setTouchable(Touchable.disabled);
@@ -110,7 +112,7 @@ public class PlayScreen implements Screen {
 
 
         ////// fixxxxxxxxxxxxxxxxxxxxx!!!!!!!!!!!!!!!!!!!! number of stars index....
-        star = new Texture(Gdx.files.internal("gameAssets/whiteStar.png"));
+        star = game.manager.get("gameAssets/whiteStar.png");
         //initialize stars
         stars = new Array<Image>(true, 36);
         for (int i = 0; i < 36; i++) {
@@ -127,7 +129,7 @@ public class PlayScreen implements Screen {
 
 
         //initialize balls
-        ball = new Texture(Gdx.files.internal("gameAssets/white.png"));
+        ball = game.manager.get("gameAssets/white.png");
         balls = new Array<Ball>(true, 36);
         for (int i = 0; i < 36; i++) {
             balls.add(new Ball(ball, this));
@@ -140,7 +142,7 @@ public class PlayScreen implements Screen {
 
 
         //confirmButton to continue
-        confirmButton = new MyButton(new Texture(Gdx.files.internal("gameAssets/button2.png")), this);
+        confirmButton = new MyButton((Texture)game.manager.get("gameAssets/button.png"), this);
         confirmButton.setSize(game.res.x, game.res.y / 8f);
         confirmButton.setPosition(0, balls.get(0).getHeight() + 20f); //scheis hardcoded kack
         confirmButton.setVisible(false);
@@ -173,8 +175,8 @@ public class PlayScreen implements Screen {
             solutionBalls.get(i).setVisible(false);
         }
         //initialize Textures of win/ lose
-        win = new Texture(Gdx.files.internal("gameAssets/win.png"));
-        lose = new Texture(Gdx.files.internal("gameAssets/lose.png"));
+        win = game.manager.get("gameAssets/win.png");
+        lose = game.manager.get("gameAssets/lose.png");
         winBanner = new Image(win);
         loseBanner = new Image(lose);
         stage.addActor(winBanner);
@@ -189,7 +191,7 @@ public class PlayScreen implements Screen {
         winBanner.setSize(game.res.x, game.res.y / 4);
 
         //playAgainButton
-        playAgain = new Texture(Gdx.files.internal("gameAssets/playAgain.png"));
+        playAgain = game.manager.get("gameAssets/playAgain.png");
         playAgainButton = new PlayAgainButton(playAgain, game);
         stage.addActor(playAgainButton);
         playAgainButton.setVisible(false);
@@ -197,7 +199,9 @@ public class PlayScreen implements Screen {
         playAgainButton.setSize(game.res.x, balls.get(0).getHeight() * 1.5f);
 
         //countdown
-        cd = new Countdown(game.turnTime);
+        cd = new Countdown(game.options.getTurnTime(), this);
+
+        //array = new BallArray(this);
 
         Gdx.input.setInputProcessor(stage);
     }
@@ -227,7 +231,7 @@ public class PlayScreen implements Screen {
             stars.get((line + 1) * 4 - i - 1 - countToFour).setTouchable(Touchable.disabled);
         }
 
-        if (game.isPermute){
+        if (game.options.isPermute()){
             switch (permuteDirection){
                 case 0:
                     Gdx.app.log("permute", "left");
@@ -256,7 +260,7 @@ public class PlayScreen implements Screen {
         sba.setAmount(1f);
         sba.setDuration(1f);
         loseBanner.addAction(sba);
-        game.isTimer = false;
+        game.options.setTimer(false);
     }
 
     public void youWin() {
@@ -265,7 +269,7 @@ public class PlayScreen implements Screen {
         moveToAction.setPosition(0, -game.res.y / 2);
         moveToAction.setDuration(5f);
         winBanner.addAction(moveToAction);
-        game.isTimer = false;
+        game.options.setTimer(false);
     }
 
     private void fillBalls(){
@@ -279,7 +283,6 @@ public class PlayScreen implements Screen {
                 while (usedColors.contains(colors.get(randomNum), false)) {
                     randomNum = MathUtils.random(5);
                 }
-                Gdx.app.log("RandomNum:", String.format("%d", randomNum));
                 balls.get(i).setColor(colors.get(randomNum));
                 usedColors.add(colors.get(randomNum));
             }
@@ -301,9 +304,8 @@ public class PlayScreen implements Screen {
             confirmButton.setTouchable(Touchable.enabled);
         }
 
-        if (game.isTimer){
+        if (game.options.isTimer()){
            if(cd.countingDown(delta)){
-               Gdx.app.log("RandomNum:", String.format("%3f", delta));
                fillBalls();
                confirmButton.pressButton();
            }
@@ -313,7 +315,7 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
-        if (game.isTimer)
+        if (game.options.isTimer())
             cd.draw(stage.getBatch(), game.res.x / 36 , 2.5f * balls.get(0).getHeight());
 
     }
@@ -350,95 +352,3 @@ public class PlayScreen implements Screen {
 
     }
 }
-/*
-    @Override
-    public boolean keyDown(int keycode) {
-        return false;
-    }
-
-    @Override
-    public boolean keyUp(int keycode) {
-        return false;
-    }
-
-    @Override
-    public boolean keyTyped(char character) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-       // boolean isWon;
-        Vector2 coord = stage.screenToStageCoordinates(new Vector2((float)screenX,(float)screenY));
-        Actor hitActor = (Actor) stage.hit(coord.x,coord.y, true);
-
-
-
-        if(bar.contains((Ball) hitActor, true) && indexOfPressed != -1){
-            balls.get(indexOfPressed).setColor(hitActor.getColor().r, hitActor.getColor().g, hitActor.getColor().b, hitActor.getColor().a);
-            balls.get(indexOfPressed).isPressed = false;
-            indexOfPressed = -1;
-        }
-
-        if (hitActor == confirmButton) {
-            isWon = computeStars();
-            line += 1;
-            if (indexOfPressed != -1) {
-                balls.get(indexOfPressed).isPressed = false;
-                indexOfPressed = -1;
-            }
-            //this happens if you win during any state of game
-            if(isWon) {
-                youWin();
-                for (int i = line * 4; i < 4 * (line + 1); i++) {
-                    balls.get(i - 4).setTouchable(Touchable.disabled);
-                    confirmButton.setVisible(false);
-                    playAgainAnimation();
-                }
-            }
-            //this happens if you reach the last row and dont make it
-            else if(!isWon && line == maxLine){
-                confirmButton.setVisible(false);
-                youLose();
-                for (int i = 0; i < 4; i++) {
-                    solutionBalls.get(i).setVisible(true);
-                    solutionBalls.get(i).setTouchable(Touchable.disabled);
-                    balls.get((line - 1) * 4 + i).setTouchable(Touchable.disabled);
-                    playAgainAnimation();
-                }
-                //this happens if you go to next row without losing
-            } else {
-                for (int i = line * 4; i < 4 * (line + 1); i++) {
-                    balls.get(i).setVisible(true);
-                    balls.get(i - 4).setTouchable(Touchable.disabled);
-                    confirmButton.setVisible(false);
-                }
-            }
-        }
-
-        return true;
-    }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        return false;
-    }
-
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        return false;
-    }
-
-    @Override
-    public boolean scrolled(int amount) {
-        return false;
-    }
-
-
-}
-*/
