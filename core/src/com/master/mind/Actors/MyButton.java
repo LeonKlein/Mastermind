@@ -3,8 +3,14 @@ package com.master.mind.Actors;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.master.mind.Containers.BallArray;
+import com.master.mind.Countdown;
+import com.master.mind.GameLogic;
+import com.master.mind.GameOptions;
+import com.master.mind.MasterMaster;
 import com.master.mind.Screens.PlayScreen;
 
 /**
@@ -12,14 +18,22 @@ import com.master.mind.Screens.PlayScreen;
  */
 
 public class MyButton extends Image {
-    PlayScreen playScreen;
-    private boolean isWon;
+    private BallArray arrayOfLines;
+    private GameLogic gameLogic;
+    private Countdown countdown;
+    private GameOptions gameOptions;
 
-    public MyButton(Texture texture, PlayScreen screen){
-        super(texture);
-        this.playScreen = screen;
+    public MyButton(PlayScreen playScreen){
+        super((Texture) playScreen.game.manager.get("gameAssets/button.png"));
+        this.arrayOfLines = playScreen.ballArray;
+        this.gameLogic = playScreen.gameLogic;
+        this.countdown = playScreen.cd;
+        this.gameOptions = playScreen.game.options;
 
-
+        setSize(playScreen.game.res.x, playScreen.game.res.y / 8f);
+        setPosition(0, arrayOfLines.getArrayOfLines().get(0).getBallLine().get(0).getHeight() + 20f); //scheis hardcoded kack
+        setVisible(false);
+        playScreen.stage.addActor(this);
 
         addListener(new InputListener(){
             @Override
@@ -30,42 +44,13 @@ public class MyButton extends Image {
         });
     }
 
-    public void pressButton(){
-        isWon = playScreen.computeStars();
-        playScreen.line += 1;
-        if (playScreen.game.options.isTimer()) playScreen.cd.setCountdown();
-
-        if (playScreen.indexOfPressed != -1) {
-            playScreen.balls.get(playScreen.indexOfPressed).isPressed = false;
-            playScreen.indexOfPressed = -1;
-        }
-        //this happens if you win during any state of game
-        if(isWon) {
-            playScreen.youWin();
-            for (int i = playScreen.line * 4; i < 4 * (playScreen.line + 1); i++) {
-                playScreen.balls.get(i - 4).setTouchable(Touchable.disabled);
-                MyButton.this.setVisible(false);
-                playScreen.playAgainButton.playAgainAnimation();
-            }
-        }
-        //this happens if you reach the last row and dont make it
-        else if(!isWon && playScreen.line == playScreen.maxLine){
-            MyButton.this.setVisible(false);
-            playScreen.youLose();
-            for (int i = 0; i < 4; i++) {
-                playScreen.solutionBalls.get(i).setVisible(true);
-                playScreen.solutionBalls.get(i).setTouchable(Touchable.disabled);
-                playScreen.balls.get((playScreen.line - 1) * 4 + i).setTouchable(Touchable.disabled);
-                playScreen.playAgainButton.playAgainAnimation();
-            }
-            //this happens if you go to next row without losing
-        } else {
-            for (int i = playScreen.line * 4; i < 4 * (playScreen.line + 1); i++) {
-                playScreen.balls.get(i).setVisible(true);
-                playScreen.balls.get(i - 4).setTouchable(Touchable.disabled);
-                MyButton.this.setVisible(false);
-            }
+    public void pressButton() {
+        setVisible(false);
+        gameLogic.computeStars();
+        if (!gameLogic.isGameOver()) {
+            arrayOfLines.incrementCurrentLine();
+            if (gameOptions.isTimer())
+                countdown.setCountdown();
         }
     }
-
 }

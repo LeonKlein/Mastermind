@@ -1,15 +1,14 @@
 package com.master.mind.Actors;
 
-        import com.badlogic.gdx.graphics.Color;
-        import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * Created by Leon on 07.10.2017.
  */
 
 public class PermutableArray<T> extends Array<T> {
-    public PermutableArray (){
-        super();
+    public PermutableArray (boolean ordered, int capactiy){
+        super(ordered, capactiy);
     }
 
     public void permuteLeft(){

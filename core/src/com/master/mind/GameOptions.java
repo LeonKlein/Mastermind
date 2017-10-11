@@ -16,7 +16,7 @@ public class GameOptions {
 
     private Preferences prefs;
 
-    public GameOptions(){
+    GameOptions(){
         setPermute(false);
         prefs = Gdx.app.getPreferences("MyPreferences");
     }
@@ -25,11 +25,11 @@ public class GameOptions {
         isPermute = permute;
     }
 
-    public void setTimer(boolean timer) {
+    void setTimer(boolean timer) {
         isTimer = timer;
     }
 
-    public void setTurnTime(int turnTime) {
+    private void setTurnTime(int turnTime) {
         this.turnTime = turnTime;
     }
 
@@ -37,7 +37,7 @@ public class GameOptions {
         return turnTime;
     }
 
-    public boolean isPermute() {
+    boolean isPermute() {
         return isPermute;
     }
 
@@ -52,19 +52,21 @@ public class GameOptions {
     public void difficulty(String grade){
         prefs.putString("Difficulty", grade);
         prefs.flush();
-        if (grade == "easy") {
+
+        if (grade.equals("easy")) {
             setTimer(false);
             setTurnTime(0);
         }
-        else if (grade == "medium") {
+        else if (grade.equals("medium")) {
+            Gdx.app.log("Difficulty", "medium");
             setTimer(true);
             setTurnTime(30);
         }
-        else if (grade == "hard"){
+        else if (grade.equals("hard")){
             setTimer(true);
             setTurnTime(15);
         }
-        else {
+        else{
             setTimer(true);
             setTurnTime(7);
         }
