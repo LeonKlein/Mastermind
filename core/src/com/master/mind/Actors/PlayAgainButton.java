@@ -25,7 +25,7 @@ public class PlayAgainButton extends Image {
         playScreen.stage.addActor(this);
         setVisible(false);
         setPosition(0, 0);
-        setSize(playScreen.game.res.x, playScreen.game.res.y * 0.2f);
+        setSize(playScreen.game.res.x, playScreen.game.res.y * 0.18f);
 
 
         addListener(new InputListener(){
@@ -40,7 +40,7 @@ public class PlayAgainButton extends Image {
     public void playAgainAnimation() {
         this.setVisible(true);
         this.setTouchable(Touchable.enabled);
-        Action fadeLoop = Actions.forever(Actions.sequence(Actions.fadeOut(1f), Actions.fadeIn(1f)));
+        Action fadeLoop = Actions.forever(Actions.sequence(Actions.fadeOut(1f), Actions.fadeIn(1f), Actions.alpha(1f, 1.5f)));
         this.addAction(fadeLoop);
     }
 

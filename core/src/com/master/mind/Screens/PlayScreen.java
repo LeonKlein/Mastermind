@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import com.master.mind.Actors.BlackOverlay;
 import com.master.mind.Containers.BallArray;
 import com.master.mind.Containers.ColorBallBar;
 import com.master.mind.Containers.StarArray;
@@ -42,6 +43,8 @@ public class PlayScreen implements Screen {
     public PlayAgainButton playAgainButton;
 
     public Countdown cd;
+
+    public BlackOverlay overlay;
 
 
     PlayScreen(MasterMaster game) {
@@ -81,9 +84,17 @@ public class PlayScreen implements Screen {
         //countdown
         cd = new Countdown(game.options.getTurnTime(), game.manager);
 
+        //black overlay
+        overlay = new BlackOverlay(this);
+
         //Important: Initialize Button after countdown!!!
         confirmButton = new MyButton(this);
         playAgainButton = new PlayAgainButton(this);
+
+        //change stage render order, so that "you win" aor " you lose" is drawn last
+        gameLogic.loseBanner.setZIndex(100);
+        gameLogic.winBanner.setZIndex(101);
+
 
         Gdx.input.setInputProcessor(stage);
     }

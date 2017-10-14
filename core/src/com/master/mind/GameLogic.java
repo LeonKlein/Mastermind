@@ -2,7 +2,9 @@ package com.master.mind;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
@@ -19,8 +21,8 @@ import com.master.mind.Screens.PlayScreen;
  */
 
 public class GameLogic {
-    private Image loseBanner;
-    private Image winBanner;
+    public Image loseBanner;
+    public Image winBanner;
     public PermutableArray<Color> colorSet;
     private PlayScreen playScreen;
     private BallArray arrayOfLines;
@@ -52,8 +54,9 @@ public class GameLogic {
         loseBanner.setOrigin(loseBanner.getWidth() / 2, loseBanner.getHeight() / 2);
         loseBanner.setPosition(playScreen.game.res.x / 4, playScreen.game.res.y / 2);
 
-        winBanner.setPosition(0, playScreen.game.res.y);
-        winBanner.setSize(playScreen.game.res.x, playScreen.game.res.y / 4);
+        winBanner.setSize(playScreen.game.res.x / 2, playScreen.game.res.y / 8);
+        winBanner.setOrigin(loseBanner.getWidth() / 2, loseBanner.getHeight() / 2);
+        winBanner.setPosition(playScreen.game.res.x / 4, playScreen.game.res.y / 2);
 
         //construct color set
         for (int i = 0; i < 4; i++) {
@@ -120,10 +123,10 @@ public class GameLogic {
     private void youWin(){
         setGameOver(true);
         winBanner.setVisible(true);
-        MoveToAction moveToAction = new MoveToAction();
-        moveToAction.setPosition(0, -playScreen.game.res.y / 2);
-        moveToAction.setDuration(5f);
-        winBanner.addAction(moveToAction);
+        ScaleByAction sba = new ScaleByAction();
+        sba.setAmount(1f);
+        sba.setDuration(1f);
+        winBanner.addAction(sba);
     }
 
     private void youLose() {
@@ -146,9 +149,14 @@ public class GameLogic {
             arrayOfLines.getArrayOfLines().get(arrayOfLines.getCurrentLine()).
                     getBallLine().get(i).setTouchable(Touchable.disabled);
         }
+        if(arrayOfLines.getIndexOfPressed()!= -1)
+        arrayOfLines.getArrayOfLines().get(arrayOfLines.getCurrentLine())
+                .getBallLine().get(arrayOfLines.getIndexOfPressed()).setPressed(false);
         playScreen.playAgainButton.playAgainAnimation();
         playScreen.game.options.setTimer(false);
+        playScreen.overlay.setVisible(true);
     }
+
 
     public boolean isGameOver() {
         return isGameOver;

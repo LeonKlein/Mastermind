@@ -114,7 +114,7 @@ public class BallArray {
         return ballTexture;
     }
 
-    int getIndexOfPressed() {
+    public int getIndexOfPressed() {
         return indexOfPressed;
     }
 
@@ -188,7 +188,7 @@ public class BallArray {
             }
 
 
-            void setPressed(boolean pressed) {
+            public void setPressed(boolean pressed) {
                 isPressed = pressed;
             }
 

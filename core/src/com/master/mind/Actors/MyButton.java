@@ -30,19 +30,19 @@ public class MyButton extends Image {
         this.countdown = playScreen.cd;
         this.gameOptions = playScreen.game.options;
 
-        setSize(playScreen.game.res.x, playScreen.game.res.y / 8f);
-        setPosition(0, arrayOfLines.getArrayOfLines().get(0).getBallLine().get(0).getHeight() + 20f); //scheis hardcoded kack
+        setSize(playScreen.game.res.x, playScreen.game.res.y * 2.5f / 16f);
+        setPosition(0, arrayOfLines.getArrayOfLines().get(0).getBallLine().get(0).getHeight());
         setVisible(false);
         playScreen.stage.addActor(this);
 
         addListener(new InputListener(){
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                pressButton();
-                return super.touchDown(event, x, y, pointer, button);
-            }
-        });
-    }
+        @Override
+        public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+            pressButton();
+            return super.touchDown(event, x, y, pointer, button);
+        }
+    });
+}
 
     public void pressButton() {
         setVisible(false);
