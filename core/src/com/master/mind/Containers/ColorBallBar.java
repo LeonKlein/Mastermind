@@ -45,7 +45,19 @@ public class ColorBallBar {
                     BallArray.Line ballLine = arrayOfLines.getArrayOfLines().get(arrayOfLines.getCurrentLine());
 
                     if (arrayOfLines.getIndexOfPressed() != -1) {
-                        ballLine.getBallLine().get(arrayOfLines.getIndexOfPressed()).setColor(SelectColorBall.this.getColor());
+                        ballLine.getBallLine().get(arrayOfLines.getIndexOfPressed()).
+                                setColor(SelectColorBall.this.getColor());
+                        for (int i = 1; i < 4; i++) {
+                            if (ballLine.getBallLine().get((arrayOfLines.getIndexOfPressed() + i) % 4).
+                                    getColor().equals(arrayOfLines.getPlayScreen().color_def))
+                            {
+                                ballLine.getBallLine().get((arrayOfLines.getIndexOfPressed()+ i) % 4).
+                                        setPressed(true);
+                                ballLine.getBallLine().get(arrayOfLines.getIndexOfPressed()).setPressed(false);
+                                arrayOfLines.setIndexOfPressed((arrayOfLines.getIndexOfPressed()+ i) % 4);
+                                return super.touchDown(event, x, y, pointer, button);
+                            }
+                        }
                         ballLine.getBallLine().get(arrayOfLines.getIndexOfPressed()).setPressed(false);
                         arrayOfLines.setIndexOfPressed(-1);
                     }

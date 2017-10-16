@@ -32,6 +32,7 @@ public class BallArray {
         this.playScreen = screen;
         currentLine = 0;
         ballTexture = playScreen.game.manager.get("gameAssets/white.png");
+        setIndexOfPressed(0);
 
         //construct the main ball array (8 lines with 4 balls each)
         arrayOfLines = new Array<Line>(true, 8);
@@ -72,7 +73,6 @@ public class BallArray {
     public void incrementCurrentLine() {
         if(getIndexOfPressed() != -1) {
             arrayOfLines.get(getCurrentLine()).getBallLine().get(indexOfPressed).setPressed(false);
-            setIndexOfPressed(-1);
         }
         for (int i = 0; i < 4; i++) {
             arrayOfLines.get(currentLine).getBallLine().get(i).setTouchable(Touchable.disabled);
@@ -81,6 +81,8 @@ public class BallArray {
         for (int i = 0; i < 4; i++) {
             arrayOfLines.get(currentLine).getBallLine().get(i).setVisible(true);
         }
+        setIndexOfPressed(0);
+        arrayOfLines.get(getCurrentLine()).getBallLine().get(indexOfPressed).setPressed(true);
     }
 
     public void fillBalls(){

@@ -75,6 +75,8 @@ public class PlayScreen implements Screen {
         stage.addActor(background);
 
         ballArray = new BallArray(this);
+        ballArray.getArrayOfLines().get(ballArray.getCurrentLine()).getBallLine().
+                get(ballArray.getIndexOfPressed()).setPressed(true);
         starArray = new StarArray(this);
         bar = new ColorBallBar(ballArray);
 

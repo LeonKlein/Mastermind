@@ -51,7 +51,7 @@ public class LoadingScreen implements Screen {
 
         TextureAtlas atlas = game.manager.get("Loading/LoadingPic.atlas", TextureAtlas.class);
         Gdx.app.log("Size", String.format("%d",atlas.getRegions().size));
-        ani = new Animation<TextureRegion>(0.7f, atlas.getRegions());
+        ani = new Animation<TextureRegion>(0.5f, atlas.getRegions());
         //Gdx.app.log("Size", String.format("%d",atlas.getRegions().size));
         ani.setPlayMode(Animation.PlayMode.LOOP);
         LoadingBall loadingBall = new LoadingBall(ani);
