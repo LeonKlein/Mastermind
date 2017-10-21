@@ -32,8 +32,8 @@ public class MenuScreen implements Screen {
     }
     @Override
     public void show() {
-        Skin skin = game.manager.get("shad/uiskin.json");
-        stage = new Stage(new StretchViewport(game.res.x / 4, game.res.y / 4));
+        Skin skin = game.manager.get("skin/ourskin.json");
+        stage = new Stage(new StretchViewport(game.res.x, game.res.y));
         Table table = new Table();
 
         final TextButton playButton = new TextButton("Play", skin, "default");
@@ -62,6 +62,8 @@ public class MenuScreen implements Screen {
 
         selectBox.setItems("easy", "medium", "hard", "godlike");
         selectBox.setSelected(game.options.getPrefs().getString("Difficulty", "easy"));
+        selectBox.setAlignment(Align.center);
+        selectBox.getList().setAlignment(Align.center);
 
         stage.addActor(table);
 
@@ -69,12 +71,12 @@ public class MenuScreen implements Screen {
         table.align(Align.center | Align.top);
         table.setFillParent(true);
         table.setDebug(false);
-        table.padTop(game.res.y / 16);
-        table.add(playButton).fillX().uniformX();
+        table.padTop(game.res.y / 8);
+        table.add(playButton).width(game.res.x * 1 / 2f).height(game.res.y / 8f);
         table.row();
-        table.add(permuteButton).fillX().padTop(playButton.getHeight());
+        table.add(permuteButton).width(game.res.x * 1 / 2f).height(game.res.y / 8f).padTop(game.res.y / 16);
         table.row();
-        table.add(selectBox).fillX().padTop(playButton.getHeight());
+        table.add(selectBox).width(game.res.x * 1 / 2f).height(game.res.y / 8f).padTop(game.res.y / 16);
 
         Gdx.input.setInputProcessor(stage);
     }
@@ -83,7 +85,7 @@ public class MenuScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 0.5f);
+        Gdx.gl.glClearColor(0.1f, 0.1f, 0.1f, 0.7f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();

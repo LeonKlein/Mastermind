@@ -85,7 +85,7 @@ public class GameLogic {
                 countWhite += 1;
             }
         }
-        //Gdx.app.log(String.format("%d", countRed), String.format("%d", countWhite));
+
 
         //starts painting stars red at right top star
         for (int i = 3; i >= 4 - countRed; i--) {
