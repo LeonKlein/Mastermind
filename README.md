@@ -3,6 +3,8 @@
 Break the color code! or feel free to contribute to this version of the popular Mastermind board game powered by
 [libGDX](https://libgdx.badlogicgames.com/)
 
+<img src="https://github.com/LeonKlein/Mastermind/blob/master/example/menu.png" width="200"> <img src="https://github.com/LeonKlein/Mastermind/blob/master/example/gamescreen.png" width="200"> 
+
 
 # Contributors
 [LeonKlein](https://github.com/LeonKlein)
